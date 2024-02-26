@@ -44,7 +44,7 @@ queue_t *queue_create(void)
  */
 int queue_is_empty(const queue_t *queue)
 {
-    return queue->front == NULL;
+    return queue == NULL || queue->front == NULL;
 }
 
 /**
@@ -55,6 +55,9 @@ int queue_is_empty(const queue_t *queue)
  */
 void queue_push(queue_t **queue, void *data)
 {
+    if (queue == NULL || data == NULL)
+        return;
+
     queue_node_t *new_node = malloc(sizeof(queue_node_t));
     if (new_node == NULL)
         return;
@@ -80,18 +83,17 @@ void queue_push(queue_t **queue, void *data)
  */
 void *queue_pop(queue_t **queue)
 {
-    if (queue_is_empty(*queue))
+    if (queue == NULL || queue_is_empty(*queue))
         return NULL;
 
     queue_node_t *temp = (*queue)->front;
     void *data = temp->data;
 
     (*queue)->front = (*queue)->front->next;
-    free(temp);
-
     if ((*queue)->front == NULL)
         (*queue)->rear = NULL;
 
+    free(temp);
     return data;
 }
 
@@ -102,8 +104,11 @@ void *queue_pop(queue_t **queue)
  */
 void queue_delete(queue_t *queue)
 {
+    if (queue == NULL)
+        return;
+
     while (!queue_is_empty(queue))
-        queue_pop(&queue);
+        free(queue_pop(&queue));
     free(queue);
 }
 
@@ -120,7 +125,10 @@ void binary_tree_levelorder(const binary_tree_t *tree, void (*func)(int))
     if (tree == NULL || func == NULL)
         return;
 
-    queue_t *queue = NULL;
+    queue_t *queue = queue_create();
+    if (queue == NULL)
+        return;
+
     const binary_tree_t *current;
 
     queue_push(&queue, (void *)tree);
