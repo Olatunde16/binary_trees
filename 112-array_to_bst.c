@@ -10,7 +10,7 @@
  */
 bst_t *array_to_bst(int *array, size_t size)
 {
-	bst_t *root = NULL;
+	bst_t *tree = NULL;
 	size_t i, j;
 
 	if (array == NULL)
@@ -29,5 +29,5 @@ bst_t *array_to_bst(int *array, size_t size)
 				return (NULL);
 		}
 	}
-	return (root);
+	return (tree);
 }
