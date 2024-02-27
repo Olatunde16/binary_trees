@@ -1,8 +1,6 @@
 #include <stdlib.h>
 #include "binary_trees.h"
 
-int binary_tree_is_ancestor(const binary_tree_t *ancestor, const binary_tree_t *node);
-
 /**
  * binary_trees_ancestor - Finds the lowest common ancestor of two nodes
  * @first: A pointer to the first node
@@ -10,39 +8,21 @@ int binary_tree_is_ancestor(const binary_tree_t *ancestor, const binary_tree_t *
  *
  * Return: A pointer to the lowest common ancestor node, or NULL if no common ancestor was found
  */
-binary_tree_t *binary_trees_ancestor(const binary_tree_t *first, const binary_tree_t *second)
+binary_tree_t *binary_trees_ancestor(const binary_tree_t *first,
+		const binary_tree_t *second)
 {
-	const binary_tree_t *ancestor;
+	binary_tree_t *mom, *pop;
 
-	if (first == NULL || second == NULL)
+	if (!first || !second)
 		return (NULL);
+	if (first == second)
+		return ((binary_tree_t *)first);
 
-	ancestor = first;
-	while (ancestor)
-	{
-		if (binary_tree_is_ancestor(ancestor, second))
-			return (binary_tree_t *)ancestor;
-		ancestor = ancestor->parent;
-	}
+	mom = first->parent, pop = second->parent;
+	if (first == pop || !mom || (!mom->parent && pop))
+		return (binary_trees_ancestor(first, pop));
+	else if (mom == second || !pop || (!pop->parent && mom))
+		return (binary_trees_ancestor(mom, second));
 
-	return (NULL);
-}
-
-/**
- * binary_tree_is_ancestor - Checks if a node is an ancestor of another node
- * @ancestor: A pointer to the potential ancestor node
- * @node: A pointer to the potential descendant node
- *
- * Return: 1 if ancestor is an ancestor of node, otherwise 0
- */
-int binary_tree_is_ancestor(const binary_tree_t *ancestor, const binary_tree_t *node)
-{
-	while (node)
-	{
-		if (node == ancestor)
-			return (1);
-		node = node->parent;
-	}
-
-	return (0);
+	return (binary_trees_ancestor(mom, pop));
 }
