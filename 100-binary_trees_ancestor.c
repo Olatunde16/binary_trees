@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include "binary_trees.h"
 
+int binary_tree_is_ancestor(const binary_tree_t *ancestor, const binary_tree_t *node);
+
 /**
  * binary_trees_ancestor - Finds the lowest common ancestor of two nodes
  * @first: A pointer to the first node
