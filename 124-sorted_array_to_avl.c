@@ -1,6 +1,8 @@
 #include "binary_trees.h"
+#include <stdlib.h>
 
-avl_t *create_avl_node(avl_t *parent, int value);
+avl_t *create_avl_node(avl_t *parent, int *array, int first, int last);
+avl_t *sorted_array_to_avl(int *array, size_t size);
 
 /**
  * create_avl_node - Creates a new AVL node.
@@ -10,17 +12,24 @@ avl_t *create_avl_node(avl_t *parent, int value);
  *
  * Return: Pointer to the new node, or NULL on failure.
  */
-avl_t *create_avl_node(avl_t *parent, int value)
+avl_t *create_avl_node(avl_t *parent, int *array, int first, int last)
 {
-	avl_t node;
+	avl_t *node;
+	binary_tree_t *aux;
+	int mid = 0;
 
-	*node = binary_tree_node(parent, value);
-
-	if (!node)
-		return (NULL);
-
-	node->parent = parent;
-	return (node);
+	if (first <= last)
+	{
+		mid = (first + last) / 2;
+		aux = binary_tree_node((binary_tree_t *)parent, array[mid]);
+		if (aux == NULL)
+			return (NULL);
+		node = (avl_t *)aux;
+		node->left = create_avl_node(node, array, first, mid - 1);
+		node->right = create_avl_node(node, array, mid + 1, last);
+		return (node);
+	}
+	return (NULL);
 }
 
 /**
@@ -33,8 +42,7 @@ avl_t *create_avl_node(avl_t *parent, int value)
  */
 avl_t *sorted_array_to_avl(int *array, size_t size)
 {
-	if (size == NULL)
+	if (array == NULL || size == 0)
 		return (NULL);
-
-	return (create_avl_node(NULL, array[size / 2]));
+	return (create_avl_node(NULL, array, 0, ((int)(size)) - 1));
 }
